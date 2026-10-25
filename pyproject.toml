@@ -5,10 +5,12 @@ description = "An agent that understands and safely changes AWS serverless codeb
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "gitsource>=0.0.5",
     "minsearch>=0.2.0",
     "openai>=3.16.2",
     "pydantic-ai-slim[bedrock,openai]>=2.59.0",
     "python-dotenv>=1.2.3",
+    "python-frontmatter>=1.3.0",
 ]
 
 [dependency-groups]
