@@ -5,8 +5,8 @@ from safe_change_agent.config import get_model
 
 def test_openai_is_default(monkeypatch):
     monkeypatch.delenv("MODEL_PROVIDER", raising=False)
-    monkeypatch.setenv("OPENAI_MODEL", "gpt-4o-mini")
-    assert get_model() == "openai:gpt-4o-mini"
+    monkeypatch.setenv("OPENAI_MODEL", "gpt-4.1-mini")
+    assert get_model() == "openai:gpt-4.1-mini"
 
 
 def test_bedrock(monkeypatch):

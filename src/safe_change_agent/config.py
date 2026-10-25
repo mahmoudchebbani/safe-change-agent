@@ -10,7 +10,7 @@ def get_model() -> str:
     provider = os.getenv("MODEL_PROVIDER", "openai")
 
     if provider == "openai":
-        return "openai:" + os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+        return "openai:" + os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
     if provider == "bedrock":
         return "bedrock:" + os.getenv(
             "BEDROCK_MODEL", "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
