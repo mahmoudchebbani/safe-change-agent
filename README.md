@@ -58,7 +58,8 @@ Run the tests with `make test`.
 ## Notebooks
 
 - `notebooks/01-setup.ipynb` - smoke test that confirms your environment works
-- `notebooks/02-rag.ipynb` - a minimal RAG baseline you can adapt to your own data
+- `notebooks/02-rag.ipynb` - week 1 RAG baseline over the target repo docs and code
+- `notebooks/03-agent.ipynb` - week 2 agent with `list_files`, `search_code`, `read_file` and `search_docs` tools
 
 ## Project structure
 
