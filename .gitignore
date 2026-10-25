@@ -5,3 +5,11 @@ __pycache__/
 *.pyo
 .ipynb_checkpoints/
 .DS_Store
+.pytest_cache/
+
+# target repos are cloned locally, never committed
+targets/
+# agent sandboxes and run logs
+sandboxes/
+logs/
+*.db

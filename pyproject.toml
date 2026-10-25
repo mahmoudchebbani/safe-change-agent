@@ -1,16 +1,28 @@
 [project]
-name = "ai-buildcamp-project"
+name = "safe-change-agent"
 version = "0.1.0"
-description = "My AI Engineering Buildcamp project"
+description = "An agent that understands and safely changes AWS serverless codebases"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "minsearch>=0.2.0",
     "openai>=3.16.2",
+    "pydantic-ai-slim[bedrock,openai]>=2.59.0",
     "python-dotenv>=1.2.3",
 ]
 
 [dependency-groups]
 dev = [
     "jupyter>=1.1.1",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
 ]
+
+[build-system]
+requires = ["uv_build>=0.8,<1"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_default_test_loop_scope = "session"
+asyncio_default_fixture_loop_scope = "session"
