@@ -13,3 +13,6 @@ targets/
 sandboxes/
 logs/
 *.db
+
+# IDE
+.idea/

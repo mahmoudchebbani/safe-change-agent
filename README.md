@@ -55,6 +55,18 @@ The agent is built and evaluated on public AWS sample apps, cloned at pinned com
 
 Run the tests with `make test`.
 
+## Run the agent
+
+Chat app (Streamlit):
+
+    uv run streamlit run app.py
+
+Terminal:
+
+    uv run safe-change-agent "What consumes the Fraud.Detected event?"
+
+Both send traces to Logfire when `LOGFIRE_TOKEN` is set in `.env`: one trace per session, with every agent run, LLM call, tool call, token count, cost and 👍/👎 feedback.
+
 ## Notebooks
 
 - `notebooks/01-setup.ipynb` - smoke test that confirms your environment works
