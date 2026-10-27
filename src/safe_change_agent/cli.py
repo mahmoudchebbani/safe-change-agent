@@ -27,7 +27,7 @@ def run_session(first_question: str | None = None) -> CostAccumulator:
     cost = CostAccumulator(model=model)
     session_id = uuid.uuid4().hex[:12]
 
-    with logfire.span("session {session_id}", session_id=session_id, model=model) as span:
+    with logfire.span("cli conversation {conversation_id}", conversation_id=session_id, model=model) as span:
         message_history = []
         question = first_question or ask("Question (empty to stop): ")
 
@@ -38,10 +38,10 @@ def run_session(first_question: str | None = None) -> CostAccumulator:
 
             logfire.info(
                 "run finished",
-                session_id=session_id,
+                conversation_id=session_id,
                 input_tokens=result.usage.input_tokens,
                 output_tokens=result.usage.output_tokens,
-                session_cost_usd=round(cost.total_cost, 6),
+                conversation_cost_usd=round(cost.total_cost, 6),
             )
             print(f"\n{result.output}\n")
             print(f"[run {cost.runs}: {result.usage.input_tokens} in / {result.usage.output_tokens} out tokens, "

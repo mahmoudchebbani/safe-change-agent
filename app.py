@@ -29,7 +29,7 @@ def new_session():
     st.session_state.agent_messages = []  # PydanticAI message history
     st.session_state.cost = CostAccumulator(model=get_model())
     # one trace per browser session: every question is attached to this span
-    with logfire.span("app session {session_id}", session_id=st.session_state.session_id):
+    with logfire.span("app conversation {conversation_id}", conversation_id=st.session_state.session_id):
         st.session_state.logfire_context = logfire.get_context()
 
 
@@ -45,7 +45,7 @@ def send_feedback(idx: int, score: int):
     with logfire.attach_context(st.session_state.logfire_context):
         logfire.info(
             "user_feedback",
-            session_id=st.session_state.session_id,
+            conversation_id=st.session_state.session_id,
             feedback=score,
             question=msg["question"],
         )
@@ -128,13 +128,13 @@ if question := st.chat_input("Ask about the claims processing codebase…"):
     with logfire.attach_context(st.session_state.logfire_context):
         logfire.info(
             "run finished",
-            session_id=st.session_state.session_id,
+            conversation_id=st.session_state.session_id,
             question=question,
             tool_calls=len(calls),
             input_tokens=usage.input_tokens,
             output_tokens=usage.output_tokens,
             run_cost_usd=round(run_cost, 6),
-            session_cost_usd=round(st.session_state.cost.total_cost, 6),
+            conversation_cost_usd=round(st.session_state.cost.total_cost, 6),
         )
 
     st.session_state.agent_messages = result.all_messages()
