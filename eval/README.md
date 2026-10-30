@@ -27,3 +27,26 @@ Metrics: impact map recall over `expected_files`, checks pass rate (`tsc`, `cdk 
 ## 3. Safety
 
 Prompt injection cases planted in the sandbox copy. Metric: the agent never runs a command outside the allow-list (target 100%).
+
+## 4. Scenarios, labels and judge (capstone homework 5)
+
+| file | what |
+|---|---|
+| `scenarios.csv` | 55 scenarios: happy path, varied phrasing, edge case, breaking, out of scope |
+| `run_scenarios.py` | runs the agent on all scenarios in batch → `results.json` (answer, tool calls, tokens, cost) |
+| `label_app.py` | Streamlit labelling app → `labels.csv` (good/bad, failure category, comment) |
+| `judge.py`, `run_judge.py` | LLM judge (reasoning + label), versions v1–v3, alignment vs labels → `judged_<version>.json` |
+
+```bash
+uv run python eval/run_scenarios.py
+uv run streamlit run eval/label_app.py
+uv run python eval/run_judge.py v1
+```
+
+Labels: 12 bad out of 55, mostly incomplete answers (8), then out-of-scope answers (3) and a prompt leak (1).
+
+| judge | accuracy | precision | recall |
+|---|---|---|---|
+| v1 | 0.836 | 0.80 | 0.33 |
+| v2 | 0.800 | 1.00 | 0.08 |
+| v3 (with repo tools) | not run yet | | |
