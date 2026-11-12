@@ -1,6 +1,7 @@
 """Run the agent on every scenario in batch and save the results.
 
 uv run python eval/run_scenarios.py [scenarios.csv] [results.json]
+uv run python eval/run_scenarios.py scenarios.csv results_remote.json --remote   # against the AgentCore deployment
 """
 import asyncio
 import csv
@@ -58,7 +59,37 @@ async def run_one(agent, model, scenario, semaphore):
         return row
 
 
-async def main(scenarios_file, results_file):
+async def run_one_remote(scenario, semaphore):
+    """Same row shape, but the deployed agent does the work (one AgentCore session per scenario)."""
+    from safe_change_agent.remote import invoke_remote
+
+    async with semaphore:
+        start = time.time()
+        for attempt in range(1, RETRIES + 1):
+            try:
+                r = await asyncio.to_thread(invoke_remote, scenario["question"])
+                break
+            except Exception as e:
+                print(f"ERROR (attempt {attempt}) {scenario['question'][:60]}: {e}")
+                if attempt == RETRIES:
+                    return {**scenario, "output": None, "error": str(e)}
+        if "error" in r:
+            return {**scenario, "output": None, "error": r["error"]}
+        row = {
+            **scenario,
+            "output": r["answer"],
+            "tool_calls": r["tool_calls"],
+            "input_tokens": r["input_tokens"],
+            "output_tokens": r["output_tokens"],
+            "cost": r["cost_usd"],
+            "execution_time": round(time.time() - start, 1),   # includes the AgentCore cold start
+            "agent_time": r["execution_time"],
+        }
+        print(f"{row['type']:16} {len(row['tool_calls']):3} tools ${row['cost']:.4f}  {row['execution_time']:5}s  {row['question'][:60]}")
+        return row
+
+
+async def main(scenarios_file, results_file, remote=False):
     with open(scenarios_file) as f:
         scenarios = list(csv.DictReader(f))
 
@@ -70,11 +101,14 @@ async def main(scenarios_file, results_file):
     todo = [s for s in scenarios if s["question"] not in done]
     print(f"{len(done)} already done, running {len(todo)}")
 
-    model = get_model()
-    agent = create_agent(create_codebase_tools(), model=model)
     semaphore = asyncio.Semaphore(CONCURRENCY)
-
-    new = await asyncio.gather(*(run_one(agent, model, s, semaphore) for s in todo))
+    if remote:
+        model = "remote"
+        new = await asyncio.gather(*(run_one_remote(s, semaphore) for s in todo))
+    else:
+        model = get_model()
+        agent = create_agent(create_codebase_tools(), model=model)
+        new = await asyncio.gather(*(run_one(agent, model, s, semaphore) for s in todo))
     by_question = {**done, **{r["question"]: r for r in new}}
     results = [by_question[s["question"]] for s in scenarios]
 
@@ -87,6 +121,7 @@ async def main(scenarios_file, results_file):
 
 
 if __name__ == "__main__":
-    scenarios_file = sys.argv[1] if len(sys.argv) > 1 else EVAL_DIR / "scenarios.csv"
-    results_file = sys.argv[2] if len(sys.argv) > 2 else EVAL_DIR / "results.json"
-    asyncio.run(main(scenarios_file, results_file))
+    args = [a for a in sys.argv[1:] if a != "--remote"]
+    scenarios_file = args[0] if len(args) > 0 else EVAL_DIR / "scenarios.csv"
+    results_file = args[1] if len(args) > 1 else EVAL_DIR / "results.json"
+    asyncio.run(main(scenarios_file, results_file, remote="--remote" in sys.argv))
