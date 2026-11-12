@@ -13,8 +13,11 @@ dependencies = [
     "pydantic-ai-slim[bedrock,openai]>=2.59.0",
     "python-dotenv>=1.2.3",
     "python-frontmatter>=1.3.0",
-    "streamlit>=1.66.1",
 ]
+
+[project.optional-dependencies]
+# the Streamlit chat app; not needed by the CLI or the AgentCore container
+ui = ["streamlit>=1.66.1"]
 
 [project.scripts]
 safe-change-agent = "safe_change_agent.cli:main"
