@@ -6,6 +6,7 @@ MODEL_PRICES = {
     "openai:gpt-4o-mini": {"input": 0.15, "output": 0.60},
     "openai:gpt-5-mini": {"input": 0.25, "output": 2.00},
     "bedrock:us.anthropic.claude-sonnet-4-5-20250929-v1:0": {"input": 3.00, "output": 15.00},
+    "bedrock:us.anthropic.claude-haiku-4-5-20251001-v1:0": {"input": 1.00, "output": 5.00},
 }
 
 

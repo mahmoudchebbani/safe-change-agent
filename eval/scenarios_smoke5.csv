@@ -1,0 +1,6 @@
+question,category,type
+What happens after a claim is accepted?,event-flow,happy_path
+Who listens for ClaimAccepted?,event-flow,varied_phrasing
+Who consumes the Document.Rejected event?,event-flow,edge_case
+Which Kafka topics does the claims service publish to?,event-flow,breaking
+How do I deploy this to Azure Functions?,infra,out_of_scope

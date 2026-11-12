@@ -1,0 +1,313 @@
+[
+  {
+    "question": "What happens after a claim is accepted?",
+    "category": "event-flow",
+    "type": "happy_path",
+    "output": "Perfect! Now I have a complete picture. Let me provide a comprehensive answer:\n\n## What happens after a claim is accepted\n\nWhen a claim is **accepted**, the following sequence occurs:\n\n### 1. **Claim.Accepted Event is Published** \nThe claims processing Lambda (`claimsProcessing.js:158`) publishes a `Claim.Accepted` event to EventBridge after successful validation. The event includes `lib/services/claims/app/handlers/claimsProcessing.js:159-164`:\n- `customerId`\n- `claimId` (UUID)\n- `uploadCarDamageUrl` (presigned S3 URL for car damage photos, expires in 1 hour)\n- A confirmation message\n\n### 2. **Notifications Service Sends Alert to Customer**\nThe Notifications Service listens to `Claim.Accepted` events (`lib/claims-processing-stack.ts:118`). When triggered:\n- `notifications-service.ts:101-106` defines an EventBridge rule that matches the event\n- `notifications.js` runs and:\n  1. Retrieves the customer's Cognito user sub from DynamoDB (`notifications.js:36-50`)\n  2. Publishes a real-time notification to the customer via AppSync Events API (`notifications.js:52-104`)\n  3. The event is sent to a user-specific channel (`/notifications/{userSub}`) that the frontend is subscribed to\n\n### 3. **Frontend UI Updates**\nOnce the customer receives the notification:\n- The frontend's Updates.js listens for this event (`react-claims/src/Updates.js:46`)\n- A custom `claimAccepted` event is dispatched (`react-claims/src/Updates.js:51`)\n- The VoiceClaimComponent detects this and ends the voice session (`react-claims/src/components/VoiceClaim/VoiceClaimComponent.js:179`)\n- The wizard automatically advances to the next step (Upload Damaged Car) where the presigned URL allows the customer to upload photos\n\n### Summary Flow\n**Claims Processing Lambda** \u2192 **Claim.Accepted Event** \u2192 **EventBridge** \u2192 **Notifications Lambda** \u2192 **AppSync Events API** \u2192 **Frontend** \u2192 **Auto-advance wizard + end voice session**",
+    "tool_calls": [
+      {
+        "name": "list_files",
+        "args": {
+          "directory": "."
+        }
+      },
+      {
+        "name": "search_code",
+        "args": {
+          "pattern": "[Cc]laim.*[Aa]ccept|CLAIM_ACCEPT"
+        }
+      },
+      {
+        "name": "search_docs",
+        "args": {
+          "query": "claim accepted"
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/services/claims/app/handlers/claimsProcessing.js"
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/services/claims/infra/claims-service.ts"
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/claims-processing-stack.ts"
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/services/notifications/infra/notifications-service.ts"
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/services/notifications/app/handlers/notifications.js"
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/services/claims/infra/claims-service.ts",
+          "start_line": 200,
+          "end_line": 289
+        }
+      },
+      {
+        "name": "search_code",
+        "args": {
+          "pattern": "CLAIM_ACCEPTED|Claim\\.Accepted",
+          "path_glob": "lib/services/*/infra/*.ts"
+        }
+      }
+    ],
+    "input_tokens": 70899,
+    "output_tokens": 1221,
+    "cost": 0.077004,
+    "execution_time": 10.6
+  },
+  {
+    "question": "Who listens for ClaimAccepted?",
+    "category": "event-flow",
+    "type": "varied_phrasing",
+    "output": "Excellent! Now I have all the information. Let me summarize the findings:\n\n## Who listens for ClaimAccepted\n\nThe **Notifications Service** listens for `ClaimAccepted` events.\n\n### How it works:\n\n1. **Event Rule** (lib/claims-processing-stack.ts:110-127):\n   - The NotificationsService is configured with an EventBridge rule that listens for multiple event types, including `ClaimAccepted` (lib/claims-processing-stack.ts:118)\n   - When a `Claim.Accepted` event is published to the EventBus, it matches the notification rule\n\n2. **Event Handler** (lib/services/notifications/app/handlers/notifications.js):\n   - The Lambda handler receives the event (line 14)\n   - It extracts the customer's user subject from the event detail or looks it up in DynamoDB (lines 18-24)\n   - It publishes the event to AWS AppSync Events API via an authenticated channel: `/notifications/{userSub}` (lines 52-104)\n   - This sends real-time notifications to the customer\n\n3. **Architecture** (lib/services/notifications/infra/notifications-service.ts:101-106):\n   - An EventBridge Rule triggers the Notifications Lambda function whenever a matching event arrives\n   - The event pattern is passed as a prop, which includes `ClaimsEvents.CLAIM_ACCEPTED` (lib/claims-processing-stack.ts:118)\n\nThe documentation confirms this: \"The Notifications Service utilizes this event to inform the customer about the updated status of their claim.\" (event-catalog/events/ClaimAccepted/index.mdx)\n\nAdditionally, the frontend (react-claims) also receives these events via IoT Core MQTT and uses them to update the UI (react-claims/src/Updates.js:46-51).",
+    "tool_calls": [
+      {
+        "name": "search_code",
+        "args": {
+          "pattern": "ClaimAccepted|Claim\\.Accepted|CLAIM_ACCEPTED"
+        }
+      },
+      {
+        "name": "search_code",
+        "args": {
+          "pattern": "CLAIM_ACCEPTED|Claim\\.Accepted",
+          "path_glob": "lib/services/*/infra/*.ts"
+        }
+      },
+      {
+        "name": "list_files",
+        "args": {
+          "directory": "lib/services"
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/services/claims/infra/claims-service.ts",
+          "start_line": 240,
+          "end_line": 260
+        }
+      },
+      {
+        "name": "search_code",
+        "args": {
+          "path_glob": "lib/services/*/infra/*service.ts",
+          "pattern": "CLAIM_ACCEPTED|Claim\\.Accepted|eventPattern.*detail-type"
+        }
+      },
+      {
+        "name": "search_code",
+        "args": {
+          "pattern": "addEventRule|eventPattern|source.*claims|detail-type.*Claim",
+          "path_glob": "lib/services/*/infra/*service.ts"
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/services/claims/infra/claims-service.ts",
+          "start_line": 215,
+          "end_line": 235
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/services/notifications/infra/notifications-service.ts",
+          "start_line": 1,
+          "end_line": 120
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/services/settlement/infra/settlement-service.ts",
+          "start_line": 50,
+          "end_line": 75
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/services/vendor/infra/vendor-service.ts",
+          "start_line": 210,
+          "end_line": 230
+        }
+      },
+      {
+        "name": "search_code",
+        "args": {
+          "path_glob": "lib/*.ts",
+          "pattern": "NotificationsService|eventPattern.*Claim\\.Accepted"
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/claims-processing-stack.ts",
+          "start_line": 100,
+          "end_line": 130
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/services/notifications/app/handlers/notifications.js"
+        }
+      },
+      {
+        "name": "search_docs",
+        "args": {
+          "query": "ClaimAccepted who listens consumes"
+        }
+      }
+    ],
+    "input_tokens": 71357,
+    "output_tokens": 1769,
+    "cost": 0.08020200000000001,
+    "execution_time": 15.8
+  },
+  {
+    "question": "Who consumes the Document.Rejected event?",
+    "category": "event-flow",
+    "type": "edge_case",
+    "output": "Perfect! Now I have the answer. Let me verify the event definition one more time:\n\n**According to the event catalog documentation (event-catalog/events/DocumentRejected/index.mdx:9-10), the Document.Rejected event is consumed by the **Notifications Service**.**\n\nHowever, I should note an important caveat from the documentation itself:\n\n**Status:** The event is \"reserved for future use.\" According to the documentation (event-catalog/events/DocumentRejected/index.mdx:20):\n\n> This event is reserved for future use \u2014 the current implementation transitions to a Step Functions `Fail` state rather than emitting this event explicitly. When implemented, the Notifications Service will consume it to inform the customer that their document upload was not accepted.\n\n**Current consumer setup:** Looking at the Notifications Service infrastructure (lib/claims-processing-stack.ts:114-126), the rule is configured to listen for these detail types:\n- Customer.Accepted\n- Customer.Rejected  \n- Claim.Accepted\n- Claim.Rejected\n- Document.Processed\n- Fraud.Detected\n- Fraud.Not.Detected\n- Settlement.Finalized\n- Vendor.Finalized\n\n**Document.Rejected is NOT currently in this list**, confirming that while the Notifications Service is documented as the intended consumer, the event itself is not yet being emitted or consumed in the current implementation.",
+    "tool_calls": [
+      {
+        "name": "search_code",
+        "args": {
+          "pattern": "Document\\.Rejected|DOCUMENT_REJECTED"
+        }
+      },
+      {
+        "name": "search_docs",
+        "args": {
+          "query": "Document.Rejected event consumer"
+        }
+      },
+      {
+        "name": "search_code",
+        "args": {
+          "pattern": "Document\\.Rejected",
+          "path_glob": "lib/services/*/infra/*.ts"
+        }
+      },
+      {
+        "name": "search_code",
+        "args": {
+          "pattern": "DOCUMENT_REJECTED"
+        }
+      },
+      {
+        "name": "search_code",
+        "args": {
+          "pattern": "eventPattern.*Document.*Rejected|detailType.*Document.*Rejected"
+        }
+      },
+      {
+        "name": "list_files",
+        "args": {
+          "directory": "event-catalog/events"
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "event-catalog/events/DocumentRejected/index.mdx"
+        }
+      },
+      {
+        "name": "search_code",
+        "args": {
+          "path_glob": "lib/services/notifications/infra/*.ts",
+          "pattern": "Document|DOCUMENT"
+        }
+      },
+      {
+        "name": "list_files",
+        "args": {
+          "directory": "lib/services/notifications"
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/services/notifications/infra/notifications-service.ts"
+        }
+      },
+      {
+        "name": "search_code",
+        "args": {
+          "pattern": "new NotificationsService"
+        }
+      },
+      {
+        "name": "read_file",
+        "args": {
+          "path": "lib/claims-processing-stack.ts",
+          "start_line": 100,
+          "end_line": 130
+        }
+      }
+    ],
+    "input_tokens": 54960,
+    "output_tokens": 1204,
+    "cost": 0.06098,
+    "execution_time": 11.8
+  },
+  {
+    "question": "Which Kafka topics does the claims service publish to?",
+    "category": "event-flow",
+    "type": "breaking",
+    "output": "There are **no Kafka topics** in this codebase. The claims service uses **AWS EventBridge** (a custom event bus) to publish events, not Kafka.\n\nAccording to the documentation and code search:\n\n- The claims service publishes `Claim.Accepted` and `Claim.Rejected` events to an Amazon EventBridge custom event bus (lib/services/claims/README.md:5, event-catalog/services/Claims Service/index.mdx)\n- The service uses Amazon SQS for buffering incoming `Claim.Requested` events (not publishing)\n- Events are consumed by the Notifications Service via EventBridge subscriptions\n\nThis is an **AWS-native event-driven architecture** using EventBridge, SQS, Lambda, and DynamoDB\u2014not Kafka.",
+    "tool_calls": [
+      {
+        "name": "search_code",
+        "args": {
+          "pattern": "kafka|topic",
+          "path_glob": "lib/services/claims/*"
+        }
+      },
+      {
+        "name": "search_docs",
+        "args": {
+          "query": "Kafka topics claims service publish"
+        }
+      }
+    ],
+    "input_tokens": 4894,
+    "output_tokens": 316,
+    "cost": 0.006474,
+    "execution_time": 3.3
+  },
+  {
+    "question": "How do I deploy this to Azure Functions?",
+    "category": "infra",
+    "type": "out_of_scope",
+    "output": "I can't help you deploy this to Azure Functions. This codebase is built specifically for **AWS**, using:\n\n- **AWS CDK** (Infrastructure as Code)\n- **AWS Lambda** (serverless compute)\n- **Amazon EventBridge** (event routing)\n- **AWS SQS** (queues)\n- **AWS Step Functions** (workflows)\n- **Amazon DynamoDB** (database)\n- **Amazon API Gateway** (REST APIs)\n- **Amazon Cognito** (authentication)\n\nThese AWS services don't have direct equivalents in Azure Functions that would allow a simple migration.\n\n**To run this on Azure**, you would need to:\n1. Rewrite the infrastructure from CDK (AWS) to Terraform, Bicep, or ARM templates (Azure)\n2. Replace each AWS service with Azure equivalents (e.g., EventBridge \u2192 Event Grid, Lambda \u2192 Azure Functions, DynamoDB \u2192 Cosmos DB, API Gateway \u2192 API Management, Cognito \u2192 Azure AD B2C)\n3. Rewrite all handler code to work with Azure SDKs\n\nThis is a substantial undertaking\u2014essentially a rewrite rather than a deployment.\n\n**If you want to deploy this to AWS**, I can help you understand how the codebase works. What would you like to know?",
+    "tool_calls": [],
+    "input_tokens": 1820,
+    "output_tokens": 293,
+    "cost": 0.003285,
+    "execution_time": 2.6
+  }
+]

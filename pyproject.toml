@@ -5,6 +5,7 @@ description = "An agent that understands and safely changes AWS serverless codeb
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "bedrock-agentcore>=1.26.0",
     "gitsource>=0.0.5",
     "logfire>=5.4.0",
     "minsearch>=0.2.0",
@@ -20,6 +21,7 @@ safe-change-agent = "safe_change_agent.cli:main"
 
 [dependency-groups]
 dev = [
+    "bedrock-agentcore-starter-toolkit>=0.3.14",
     "jupyter>=1.1.1",
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
