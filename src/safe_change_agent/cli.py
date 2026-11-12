@@ -59,10 +59,35 @@ def run_session(first_question: str | None = None) -> CostAccumulator:
     return cost
 
 
+def run_remote_session(first_question: str | None = None) -> None:
+    """Same loop, but every question goes to the agent deployed on AgentCore."""
+    from safe_change_agent.remote import invoke_remote, new_session_id
+
+    session_id = new_session_id()
+    total_cost = 0.0
+    question = first_question or ask("Question (empty to stop): ")
+    while question.strip():
+        result = invoke_remote(question, session_id)
+        if "error" in result:
+            print(f"\nerror: {result['error']}\n")
+        else:
+            total_cost += result.get("cost_usd", 0.0)
+            print(f"\n{result['answer']}\n")
+            print(f"[remote {result['model']}: {len(result['tool_calls'])} tool calls, "
+                  f"{result['input_tokens']} in / {result['output_tokens']} out tokens, "
+                  f"{result['execution_time']}s, session so far ${total_cost:.4f}]\n")
+        question = ask("Question (empty to stop): ")
+
+
 def main():
-    setup_monitoring()
-    first = " ".join(sys.argv[1:]) or None
-    run_session(first)
+    args = sys.argv[1:]
+    remote = "--remote" in args
+    first = " ".join(a for a in args if a != "--remote") or None
+    if remote:
+        run_remote_session(first)
+    else:
+        setup_monitoring()
+        run_session(first)
 
 
 if __name__ == "__main__":

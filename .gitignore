@@ -16,3 +16,6 @@ logs/
 
 # IDE
 .idea/
+
+# AgentCore deployment state (runtime ARN with the account id)
+.agentcore.json
