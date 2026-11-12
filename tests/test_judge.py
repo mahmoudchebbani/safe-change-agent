@@ -1,7 +1,12 @@
+import os
+
 import pytest
 
 from tests.judge import assert_criteria
 from tests.utils import run_agent_test
+
+# the judge itself runs on OpenAI (tests/judge.py), whatever MODEL_PROVIDER the agent uses
+pytestmark = pytest.mark.skipif(not os.getenv("OPENAI_API_KEY"), reason="judge tests need OPENAI_API_KEY")
 
 
 @pytest.mark.asyncio
