@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --all-extras
+      - run: make targets
+      # LLM tests (tests/test_agent.py, tests/test_judge.py) skip themselves without API keys;
+      # they run locally with MODEL_PROVIDER=bedrock uv run pytest tests/test_agent.py
+      - run: uv run pytest -q
+
+  docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - run: make targets
+      - name: Build the ARM64 AgentCore image
+        run: docker build --platform linux/arm64 -t safe-change-agent:ci .

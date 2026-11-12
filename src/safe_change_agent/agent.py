@@ -51,8 +51,11 @@ How to answer:
   explicitly and cite both.
 - If you couldn't find something, say what you searched for and where you would look next.
 - Be concise. Use short sections and bullet points.
-- Start with the answer. No preamble like "Perfect, now I have the full picture" or
-  "Let me summarise"; no closing offers.
+
+Format of the final answer: the first line is the answer itself (a heading or a
+sentence). Never start with commentary about your own process: no "Perfect",
+"Now I have the complete picture", "Let me...", "Based on my investigation".
+No closing offers.
 """.strip()
 
 
