@@ -71,33 +71,33 @@
         <rect class="box-client" x="30" y="140" width="300" height="560" rx="4"/>
         <use href="#gen-client-l" x="34" y="144" width="30" height="30"/>
         <text class="t-group" x="70" y="160">Developer laptop</text>
-        <text class="t-sub" x="70" y="175">Mahmoud's Mac · AWS profile default (IAM user learning)</text>
+        <text class="t-sub" x="70" y="175">Mahmoud's Mac · AWS profile default</text>
 
-        <use href="#gen-client-l" x="48" y="198" width="46" height="46"/>
+        <use href="#gen-client-l" x="48" y="208" width="46" height="46"/>
         <text class="t-title" x="106" y="214">CLI and eval harness</text>
         <text class="t-mono" x="106" y="229">safe-change-agent --remote "…"</text>
         <text class="t-mono" x="106" y="242">make invoke Q="…"</text>
         <text class="t-mono" x="106" y="255">eval/run_scenarios.py --remote</text>
 
-        <line class="ln-thin" x1="71" y1="248" x2="71" y2="316" marker-end="url(#m-thin)"/>
+        <line class="ln-thin" x1="71" y1="256" x2="71" y2="326" marker-end="url(#m-thin)"/>
 
-        <use href="#gen-sdk-l" x="48" y="318" width="46" height="46"/>
+        <use href="#gen-sdk-l" x="48" y="328" width="46" height="46"/>
         <text class="t-title" x="106" y="334">remote.py → boto3</text>
         <text class="t-mono" x="106" y="349">invoke_agent_runtime(arn,</text>
         <text class="t-mono" x="106" y="362">  runtimeSessionId, payload)</text>
         <text class="t-line" x="106" y="375">reads .agentcore.json · SigV4 signed</text>
 
-        <use href="#gen-toolkit-l" x="48" y="448" width="46" height="46"/>
+        <use href="#gen-toolkit-l" x="48" y="464" width="46" height="46"/>
         <text class="t-title" x="106" y="464">make deploy</text>
         <text class="t-mono" x="106" y="479">scripts/deploy_agentcore.py</text>
         <text class="t-line" x="106" y="492">docker build for linux/arm64</text>
         <text class="t-line" x="106" y="505">push → role → create/update → READY</text>
         <text class="t-line" x="106" y="518">writes .agentcore.json (runtime ARN)</text>
 
-        <line class="ln-dep" x1="71" y1="583" x2="71" y2="500" marker-end="url(#m-dep)"/>
-        <g class="badge dep" transform="translate(71,552)"><circle r="9"/><text y="3.5">D2</text></g>
+        <line class="ln-dep" x1="71" y1="584" x2="71" y2="512" marker-end="url(#m-dep)"/>
+        <g class="badge dep" transform="translate(71,548)"><circle r="9"/><text y="3.5">D2</text></g>
 
-        <use href="#gen-folder-l" x="48" y="583" width="46" height="46"/>
+        <use href="#gen-folder-l" x="48" y="586" width="46" height="46"/>
         <text class="t-title" x="106" y="599">targets/insurance-claims</text>
         <text class="t-line" x="106" y="614">pinned clone made by make targets</text>
         <text class="t-line" x="106" y="627">gitignored; no .git in the image</text>
@@ -110,17 +110,17 @@
         <text class="t-group" x="42" y="770">GitHub</text>
         <text class="t-sub" x="42" y="785">source of both repos · Actions CI</text>
 
-        <use href="#gen-git-l" x="48" y="794" width="46" height="46"/>
+        <use href="#gen-git-l" x="48" y="798" width="46" height="46"/>
         <text class="t-title" x="106" y="810">aws-samples/serverless-eda-</text>
         <text class="t-title" x="106" y="824">insurance-claims-processing</text>
         <text class="t-line" x="106" y="839">target repo, pinned at ccabee3</text>
 
-        <use href="#gen-git-l" x="48" y="850" width="46" height="46"/>
-        <text class="t-title" x="106" y="866">mahmoudchebbani/safe-change-agent</text>
-        <text class="t-line" x="106" y="881">git push → CI: unit tests + ARM64 build</text>
-        <text class="t-line" x="106" y="894">MVP commits a2dab3e … 0e88496</text>
+        <use href="#gen-git-l" x="48" y="853" width="46" height="46"/>
+        <text class="t-title" x="106" y="866">mahmoudchebbani/</text>
+        <text class="t-title" x="106" y="880">safe-change-agent</text>
+        <text class="t-line" x="106" y="895">git push → CI: tests + ARM64 build</text>
 
-        <line class="ln-dep" x1="71" y1="749" x2="71" y2="648" marker-end="url(#m-dep)"/>
+        <line class="ln-dep" x1="71" y1="749" x2="71" y2="636" marker-end="url(#m-dep)"/>
         <g class="badge dep" transform="translate(71,724)"><circle r="9"/><text y="3.5">D1</text></g>
 
         <!-- ================= AWS Cloud ================= -->
@@ -134,19 +134,19 @@
         <text class="t-region" x="438" y="124">Region us-east-1</text>
 
         <!-- column A: control plane, ECR, IAM role -->
-        <use href="#aws-agentcore" x="428" y="173" width="48" height="48"/>
+        <use href="#aws-agentcore" x="428" y="182" width="48" height="48"/>
         <text class="t-title" x="488" y="189">AgentCore control plane</text>
         <text class="t-mono" x="488" y="204">bedrock-agentcore-control</text>
         <text class="t-line" x="488" y="217">create / update runtime → version</text>
         <text class="t-line" x="488" y="230">waits until READY</text>
 
-        <use href="#aws-ecr" x="428" y="318" width="48" height="48"/>
+        <use href="#aws-ecr" x="428" y="327" width="48" height="48"/>
         <text class="t-title" x="488" y="334">Amazon ECR</text>
         <text class="t-mono" x="488" y="349">repository safe-change-agent</text>
         <text class="t-line" x="488" y="362">ARM64 image ≈ 1 GB (quota 2 GB)</text>
         <text class="t-line" x="488" y="375">tags: timestamp + latest</text>
 
-        <use href="#res-iam-role" x="428" y="463" width="48" height="48"/>
+        <use href="#res-iam-role" x="428" y="485" width="48" height="48"/>
         <text class="t-title" x="488" y="479">IAM execution role</text>
         <text class="t-mono" x="488" y="494">safe-change-agent-</text>
         <text class="t-mono" x="488" y="507">agentcore-runtime</text>
@@ -168,38 +168,38 @@
         <text class="t-label" x="750" y="278">Container · port 8080 · BedrockAgentCoreApp</text>
         <text class="t-mono" x="750" y="291">POST /invocations · GET /ping</text>
 
-        <use href="#gen-app-l" x="754" y="310" width="46" height="46"/>
+        <use href="#gen-app-l" x="754" y="320" width="46" height="46"/>
         <text class="t-title" x="812" y="326">PydanticAI agent · runtime.py</text>
         <text class="t-line" x="812" y="341">created once at startup</text>
         <text class="t-line" x="812" y="354">cites file:line, rejects false premises,</text>
         <text class="t-line" x="812" y="367">declines off-topic, never reveals rules</text>
         <g class="badge" transform="translate(1062,320)"><circle r="9"/><text y="3.5">3</text></g>
 
-        <line class="ln-req" x1="777" y1="360" x2="777" y2="416" marker-end="url(#m-req)" marker-start="url(#m-req)"/>
+        <line class="ln-req" x1="777" y1="368" x2="777" y2="419" marker-end="url(#m-req)" marker-start="url(#m-req)"/>
 
-        <use href="#gen-code-l" x="754" y="418" width="46" height="46"/>
+        <use href="#gen-code-l" x="754" y="421" width="46" height="46"/>
         <text class="t-title" x="812" y="434">4 read-only tools · tools.py</text>
         <text class="t-mono" x="812" y="449">list_files · search_code · read_file</text>
-        <text class="t-line" x="812" y="462">search_docs over a minsearch index built at boot</text>
+        <text class="t-line" x="812" y="462">search_docs: minsearch index built at boot</text>
 
-        <line class="ln-req" x1="777" y1="468" x2="777" y2="526" marker-end="url(#m-req)"/>
-        <g class="badge" transform="translate(777,497)"><circle r="9"/><text y="3.5">5</text></g>
+        <line class="ln-req" x1="777" y1="469" x2="777" y2="536" marker-end="url(#m-req)"/>
+        <g class="badge" transform="translate(777,502)"><circle r="9"/><text y="3.5">5</text></g>
 
-        <use href="#gen-folder-l" x="754" y="528" width="46" height="46"/>
+        <use href="#gen-folder-l" x="754" y="538" width="46" height="46"/>
         <text class="t-mono" x="812" y="544" style="font-weight:600;fill:var(--ink);font-size:11.5px">/app/targets/insurance-claims</text>
         <text class="t-line" x="812" y="559">repo snapshot copied in at build time</text>
         <text class="t-line" x="812" y="572">no git, no network; redeploy to update it</text>
         <text class="t-line" x="812" y="585">this is the only code the agent can read</text>
 
         <!-- column C: Bedrock, CloudWatch + X-Ray -->
-        <use href="#aws-bedrock" x="1158" y="318" width="48" height="48"/>
+        <use href="#aws-bedrock" x="1158" y="333" width="48" height="48"/>
         <text class="t-title" x="1218" y="334">Amazon Bedrock</text>
         <text class="t-line" x="1218" y="349">Claude Haiku 4.5</text>
         <text class="t-mono" x="1218" y="362">us.anthropic.claude-haiku-</text>
         <text class="t-mono" x="1218" y="375">4-5-20251001-v1:0</text>
         <text class="t-line" x="1218" y="388">cross-region inference profile</text>
 
-        <use href="#aws-cloudwatch" x="1158" y="538" width="48" height="48"/>
+        <use href="#aws-cloudwatch" x="1158" y="547" width="48" height="48"/>
         <text class="t-title" x="1218" y="554">Amazon CloudWatch</text>
         <text class="t-mono" x="1218" y="569">/aws/bedrock-agentcore/</text>
         <text class="t-mono" x="1218" y="582">runtimes/safe_change_agent-*</text>
@@ -212,41 +212,41 @@
         <rect class="box-third" x="1150" y="750" width="260" height="140" rx="4"/>
         <text class="t-group" x="1166" y="770">Third party</text>
         <text class="t-sub" x="1166" y="785">outside AWS</text>
-        <use href="#gen-logs-l" x="1168" y="798" width="46" height="46"/>
+        <use href="#gen-logs-l" x="1168" y="808" width="46" height="46"/>
         <text class="t-title" x="1226" y="814">Logfire (Pydantic)</text>
         <text class="t-line" x="1226" y="829">one trace per run: LLM calls,</text>
         <text class="t-line" x="1226" y="842">tool calls, tokens, cost</text>
-        <text class="t-mono" x="1226" y="855">LOGFIRE_TOKEN on the runtime</text>
+        <text class="t-mono" x="1226" y="855">LOGFIRE_TOKEN env var</text>
 
         <!-- ================= Arrows: request path ================= -->
-        <path class="ln-req" d="M330 345 H355 V140 H910 V163" marker-end="url(#m-req)" marker-start="url(#m-req)"/>
+        <path class="ln-req" d="M330 351 H355 V140 H910 V163" marker-end="url(#m-req)" marker-start="url(#m-req)"/>
         <g class="badge" transform="translate(470,140)"><circle r="9"/><text y="3.5">1</text></g>
         <text class="t-label" x="486" y="158">InvokeAgentRuntime · SigV4 · session id ≥ 33 chars · {"question": "…"}</text>
         <g class="badge" transform="translate(355,250)"><circle r="9"/><text y="3.5">7</text></g>
         <text class="t-label" x="372" y="254">response JSON: answer, tool_calls,</text>
         <text class="t-label" x="372" y="268">input/output tokens, cost_usd, execution_time</text>
 
-        <line class="ln-req" x1="680" y1="342" x2="718" y2="342" marker-end="url(#m-req)"/>
-        <g class="badge" transform="translate(699,342)"><circle r="9"/><text y="3.5">2</text></g>
+        <line class="ln-req" x1="680" y1="351" x2="718" y2="351" marker-end="url(#m-req)"/>
+        <g class="badge" transform="translate(699,351)"><circle r="9"/><text y="3.5">2</text></g>
 
-        <line class="ln-thin" x1="680" y1="487" x2="718" y2="487" marker-end="url(#m-thin)"/>
-        <text class="t-note" x="699" y="480" text-anchor="middle">assumed</text>
+        <line class="ln-thin" x1="680" y1="509" x2="718" y2="509" marker-end="url(#m-thin)"/>
+        <text class="t-note" x="699" y="502" text-anchor="middle">assumed</text>
 
         <line class="ln-req" x1="1080" y1="342" x2="1156" y2="342" marker-end="url(#m-req)" marker-start="url(#m-req)"/>
         <g class="badge" transform="translate(1118,342)"><circle r="9"/><text y="3.5">4</text></g>
 
         <!-- telemetry -->
-        <line class="ln-tele" x1="1080" y1="562" x2="1156" y2="562" marker-end="url(#m-tele)"/>
-        <g class="badge" transform="translate(1118,562)"><circle r="9"/><text y="3.5">6</text></g>
-        <path class="ln-tele" d="M1080 605 H1135 V822 H1166" marker-end="url(#m-tele)"/>
+        <line class="ln-tele" x1="1080" y1="571" x2="1156" y2="571" marker-end="url(#m-tele)"/>
+        <g class="badge" transform="translate(1118,571)"><circle r="9"/><text y="3.5">6</text></g>
+        <path class="ln-tele" d="M1080 612 H1135 V831 H1166" marker-end="url(#m-tele)"/>
         <g class="badge" transform="translate(1135,735)"><circle r="9"/><text y="3.5">6</text></g>
 
         <!-- ================= Arrows: deploy path ================= -->
-        <path class="ln-dep" d="M330 472 H378 V197 H426" marker-end="url(#m-dep)"/>
-        <path class="ln-dep" d="M378 342 H426" marker-end="url(#m-dep)"/>
-        <g class="badge dep" transform="translate(402,342)"><circle r="9"/><text y="3.5">D3</text></g>
-        <g class="badge dep" transform="translate(402,197)"><circle r="9"/><text y="3.5">D4</text></g>
-        <line class="ln-dep" x1="680" y1="197" x2="698" y2="197" marker-end="url(#m-dep)"/>
+        <path class="ln-dep" d="M330 487 H378 V206 H426" marker-end="url(#m-dep)"/>
+        <path class="ln-dep" d="M378 351 H426" marker-end="url(#m-dep)"/>
+        <g class="badge dep" transform="translate(402,351)"><circle r="9"/><text y="3.5">D3</text></g>
+        <g class="badge dep" transform="translate(402,206)"><circle r="9"/><text y="3.5">D4</text></g>
+        <line class="ln-dep" x1="680" y1="206" x2="698" y2="206" marker-end="url(#m-dep)"/>
 
         <!-- ================= Legend ================= -->
         <rect class="box-legend" x="380" y="750" width="740" height="140" rx="4"/>
