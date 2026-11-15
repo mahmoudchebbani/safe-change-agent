@@ -43,34 +43,21 @@ A parser over the synthesised CloudFormation (`cdk.out`) that builds the real gr
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    subgraph local [Your laptop]
-        CLI[safe-change-agent CLI]
-        APP[Streamlit app]
-        AG[PydanticAI agent<br/>4 repo tools]
-        REPO[(targets/insurance-claims<br/>pinned clone)]
-        CLI --> AG
-        APP --> AG
-        AG --> REPO
-    end
-    subgraph aws [AWS us-east-1]
-        RT[AgentCore Runtime<br/>ARM64 container<br/>repo baked in]
-        BR[Bedrock<br/>Claude Haiku 4.5]
-        ECR[(ECR image)]
-        CW[CloudWatch logs]
-        RT --> BR
-        ECR -.-> RT
-        RT -.-> CW
-    end
-    AG -->|MODEL_PROVIDER=openai| OAI[OpenAI gpt-4.1-mini]
-    AG -->|MODEL_PROVIDER=bedrock| BR
-    CLI -->|--remote: InvokeAgentRuntime| RT
-    AG -.-> LF[Logfire traces]
-    RT -.-> LF
-```
+![Safe Change Agent on AgentCore: request path 1–7, deploy path D1–D4](docs/architecture.svg)
 
-The same `create_agent()` serves all three paths. `src/safe_change_agent/runtime.py` wraps it in the AgentCore HTTP contract (`POST /invocations`, `GET /ping`, port 8080); the container copies the pinned target repo in so the deployed agent has something to read.
+One question, end to end (the orange numbers):
+
+1. `--remote` calls `InvokeAgentRuntime` with the runtime ARN from `.agentcore.json`, a session id of at least 33 characters and the question as JSON, signed with your AWS credentials.
+2. AgentCore starts an isolated microVM for that session, assumes the execution role and pulls the image from ECR. A new session pays a 13–17 s cold start; later requests take 2–10 s.
+3. The container boots once: it walks the baked-in repo, builds the `search_docs` index and creates the agent.
+4. Every model turn is a Bedrock `InvokeModel` call on Claude Haiku 4.5, allowed by the execution role. No API key is involved.
+5. Tool calls read the repo snapshot at `/app/targets/insurance-claims` inside the container.
+6. Logs, metrics and traces go to CloudWatch and X-Ray, plus Logfire when `LOGFIRE_TOKEN` is set on the runtime.
+7. One JSON response comes back: answer, tool calls, tokens, cost and elapsed time.
+
+How the code gets there (the blue D steps): `make targets` clones the target repo at the pinned commit; `make deploy` builds the ARM64 image with that folder copied in (without `.git`), pushes it to ECR, makes sure the execution role exists and creates or updates the runtime, which produces a new version. The runtime only ever sees the image: it has no GitHub access and fetches nothing at request time, so analysing a newer commit means redeploying.
+
+The same `create_agent()` serves the CLI, the Streamlit app and the runtime. `src/safe_change_agent/runtime.py` wraps it in the AgentCore HTTP contract (`POST /invocations`, `GET /ping`, port 8080). Locally the agent runs in-process against OpenAI or Bedrock, chosen by `MODEL_PROVIDER`.
 
 ## Target repo
 
